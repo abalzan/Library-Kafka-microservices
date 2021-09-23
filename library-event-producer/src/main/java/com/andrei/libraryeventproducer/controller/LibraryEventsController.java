@@ -1,6 +1,9 @@
 package com.andrei.libraryeventproducer.controller;
 
 import com.andrei.libraryeventproducer.domain.LibraryEvent;
+import com.andrei.libraryeventproducer.producer.LibraryEventProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,10 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/library-event")
+@RequiredArgsConstructor
 public class LibraryEventsController {
 
+    private final LibraryEventProducer libraryEventProducer;
+
     @PostMapping()
-    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent event) {
+    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent event) throws JsonProcessingException {
+
+        libraryEventProducer.sendLibraryEvent(event);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
