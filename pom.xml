@@ -9,4 +9,7 @@
     <packaging>pom</packaging>
     <name>Library-Kafka-microservices</name>
 
+    <modules>
+        <module>library-event-producer</module>
+    </modules>
 </project>
