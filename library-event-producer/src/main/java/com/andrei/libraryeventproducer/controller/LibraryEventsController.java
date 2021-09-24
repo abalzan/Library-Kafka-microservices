@@ -1,6 +1,7 @@
 package com.andrei.libraryeventproducer.controller;
 
 import com.andrei.libraryeventproducer.domain.LibraryEvent;
+import com.andrei.libraryeventproducer.domain.LibraryEventType;
 import com.andrei.libraryeventproducer.producer.LibraryEventProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +26,14 @@ public class LibraryEventsController {
 
     @PostMapping("/v1/library-event")
     public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent event) throws JsonProcessingException {
-
+        event.setLibraryEventType(LibraryEventType.NEW);
         libraryEventProducer.sendLibraryEvent(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
 
     @PostMapping("/v1/library-event-synchronous")
     public ResponseEntity<LibraryEvent> postLibraryEventSynchronous(@RequestBody LibraryEvent event) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
-
+        event.setLibraryEventType(LibraryEventType.NEW);
         final SendResult<Integer, String> sendResult = libraryEventProducer.sendLibraryEventSynchronousApproach(event);
         log.info("sendResult is {}", sendResult.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
@@ -40,12 +41,14 @@ public class LibraryEventsController {
 
     @PostMapping("/v1/library-event-with-topic")
     public ResponseEntity<LibraryEvent> postLibraryEventWithTopic(@RequestBody LibraryEvent event) throws JsonProcessingException{
+        event.setLibraryEventType(LibraryEventType.NEW);
         libraryEventProducer.sendLibraryEventWithTopic(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
 
     @PostMapping("/v1/library-event-with-topic-and-header")
     public ResponseEntity<LibraryEvent> postLibraryEventWithTopicAndHeader(@RequestBody LibraryEvent event) throws JsonProcessingException{
+        event.setLibraryEventType(LibraryEventType.NEW);
         libraryEventProducer.sendLibraryEventWithTopicAndHeader(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
