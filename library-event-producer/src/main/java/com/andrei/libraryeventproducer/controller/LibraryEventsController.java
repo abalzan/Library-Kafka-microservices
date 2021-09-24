@@ -43,4 +43,10 @@ public class LibraryEventsController {
         libraryEventProducer.sendLibraryEventWithTopic(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
+
+    @PostMapping("/v1/library-event-with-topic-and-header")
+    public ResponseEntity<LibraryEvent> postLibraryEventWithTopicAndHeader(@RequestBody LibraryEvent event) throws JsonProcessingException{
+        libraryEventProducer.sendLibraryEventWithTopicAndHeader(event);
+        return ResponseEntity.status(HttpStatus.CREATED).body(event);
+    }
 }
