@@ -17,18 +17,23 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 @RestController
-@RequestMapping("/v1/library-event")
 @RequiredArgsConstructor
 @Slf4j
 public class LibraryEventsController {
 
     private final LibraryEventProducer libraryEventProducer;
 
-    @PostMapping()
-    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent event) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+    @PostMapping("/v1/library-event")
+    public ResponseEntity<LibraryEvent> postLibraryEvent(@RequestBody LibraryEvent event) throws JsonProcessingException {
 
-//        libraryEventProducer.sendLibraryEvent(event);
-        final SendResult<Integer, String> sendResult = libraryEventProducer.sendLibraryEventSynchronous(event);
+        libraryEventProducer.sendLibraryEvent(event);
+        return ResponseEntity.status(HttpStatus.CREATED).body(event);
+    }
+
+    @PostMapping("/v1/library-event-synchronous")
+    public ResponseEntity<LibraryEvent> postLibraryEventSynchronous(@RequestBody LibraryEvent event) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+
+        final SendResult<Integer, String> sendResult = libraryEventProducer.sendLibraryEventSynchronousApproach(event);
         log.info("sendResult is {}", sendResult.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
