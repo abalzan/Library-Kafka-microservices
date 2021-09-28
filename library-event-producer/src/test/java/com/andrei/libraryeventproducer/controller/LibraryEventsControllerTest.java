@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,7 +44,7 @@ class LibraryEventsControllerTest {
     void postLibraryEvent() throws Exception {
         final String json = mapper.writeValueAsString(createLibraryEvent());
 
-        doNothing().when(libraryEventProducer).sendLibraryEvent(ArgumentMatchers.isA(LibraryEvent.class));
+        when(libraryEventProducer.sendLibraryEvent(ArgumentMatchers.isA(LibraryEvent.class))).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/library-event")
                 .content(json)
@@ -71,7 +70,7 @@ class LibraryEventsControllerTest {
     void postLibraryEventWithTopic() throws Exception {
         final String json = mapper.writeValueAsString(createLibraryEvent());
 
-        doNothing().when(libraryEventProducer).sendLibraryEventWithTopic(ArgumentMatchers.isA(LibraryEvent.class));
+        when(libraryEventProducer.sendLibraryEventWithTopic(ArgumentMatchers.isA(LibraryEvent.class))).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/library-event-with-topic")
                 .content(json)
@@ -85,7 +84,7 @@ class LibraryEventsControllerTest {
 
         final String json = mapper.writeValueAsString(createLibraryEvent());
 
-        doNothing().when(libraryEventProducer).sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class));
+        when(libraryEventProducer.sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class))).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/library-event-with-topic-and-header")
                 .content(json)
@@ -98,7 +97,7 @@ class LibraryEventsControllerTest {
 
         final String json = mapper.writeValueAsString(createLibraryEventWithoutBook());
 
-        doNothing().when(libraryEventProducer).sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class));
+        when(libraryEventProducer.sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class))).thenReturn(null);
 
         String expectedErrorMessage = "book - must not be null";
 
@@ -115,7 +114,7 @@ class LibraryEventsControllerTest {
 
         final String json = mapper.writeValueAsString(createLibraryEventWithoutBookValues());
 
-        doNothing().when(libraryEventProducer).sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class));
+        when(libraryEventProducer.sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class))).thenReturn(null);
 
         String expectedErrorMessage = "book.bookId - must not be null, book.bookName - must not be blank";
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/library-event-with-topic-and-header")
