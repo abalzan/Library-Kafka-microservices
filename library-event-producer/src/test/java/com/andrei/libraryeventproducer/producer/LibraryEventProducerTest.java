@@ -34,10 +34,22 @@ class LibraryEventProducerTest {
 
     @Test
     void sendLibraryEvent() {
+        SettableListenableFuture future = new SettableListenableFuture();
+        future.setException(new RuntimeException("Exception Calling Kafka"));
+
+        Mockito.when(kafkaTemplate.sendDefault(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString())).thenReturn(future);
+
+        assertThrows(Exception.class, () -> libraryEventProducer.sendLibraryEvent(createLibraryEvent()).get());
     }
 
     @Test
     void sendLibraryEventWithTopic() {
+        SettableListenableFuture future = new SettableListenableFuture();
+        future.setException(new RuntimeException("Exception Calling Kafka"));
+
+        Mockito.when(kafkaTemplate.send(ArgumentMatchers.isA(ProducerRecord.class))).thenReturn(future);
+
+        assertThrows(Exception.class, () -> libraryEventProducer.sendLibraryEventWithTopic(createLibraryEvent()).get());
     }
 
     @Test
@@ -54,6 +66,12 @@ class LibraryEventProducerTest {
 
     @Test
     void sendLibraryEventSynchronousApproach() {
+        SettableListenableFuture future = new SettableListenableFuture();
+        future.setException(new RuntimeException("Exception Calling Kafka"));
+
+        Mockito.when(kafkaTemplate.sendDefault(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString())).thenReturn(future);
+
+        assertThrows(Exception.class, () -> libraryEventProducer.sendLibraryEventSynchronousApproach(createLibraryEvent()));
     }
 
     private LibraryEvent createLibraryEvent() {
