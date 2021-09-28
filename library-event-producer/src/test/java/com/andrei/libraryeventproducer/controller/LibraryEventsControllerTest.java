@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LibraryEventsController.class)
@@ -70,8 +71,6 @@ class LibraryEventsControllerTest {
     void postLibraryEventWithTopic() throws Exception {
         final String json = mapper.writeValueAsString(createLibraryEvent());
 
-//        when(libraryEventProducer)
-
         doNothing().when(libraryEventProducer).sendLibraryEventWithTopic(ArgumentMatchers.isA(LibraryEvent.class));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/library-event-with-topic")
@@ -92,8 +91,57 @@ class LibraryEventsControllerTest {
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
 
+    @Test
+    void postLibraryEventWithTopicAndHeaderWithoutBook_BadRequest() throws Exception {
 
+        final String json = mapper.writeValueAsString(createLibraryEventWithoutBook());
+
+        doNothing().when(libraryEventProducer).sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class));
+
+        String expectedErrorMessage = "book - must not be null";
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/library-event-with-topic-and-header")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(expectedErrorMessage))
+        ;
+    }
+
+    @Test
+    void postLibraryEventWithTopicAndHeaderWithoutBookValues_BadRequest() throws Exception {
+
+        final String json = mapper.writeValueAsString(createLibraryEventWithoutBookValues());
+
+        doNothing().when(libraryEventProducer).sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class));
+
+        String expectedErrorMessage = "book.bookId - must not be null, book.bookName - must not be blank";
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/library-event-with-topic-and-header")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(expectedErrorMessage))
+        ;
+    }
+
+    private LibraryEvent createLibraryEventWithoutBook() {
+        return LibraryEvent.builder()
+                .libraryEventId(null)
+                .book(null)
+                .build();
+    }
+
+    private LibraryEvent createLibraryEventWithoutBookValues() {
+        return LibraryEvent.builder()
+                .libraryEventId(null)
+                .book(Book.builder()
+                        .bookName(null)
+                        .bookId(null)
+                        .bookAuthor("Author")
+                        .build())
+                .build();
     }
 
     private LibraryEvent createLibraryEvent() {
