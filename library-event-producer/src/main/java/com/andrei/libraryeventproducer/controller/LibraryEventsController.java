@@ -35,7 +35,9 @@ public class LibraryEventsController {
     public ResponseEntity<LibraryEvent> postLibraryEventSynchronous(@RequestBody LibraryEvent event) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
         event.setLibraryEventType(LibraryEventType.NEW);
         final SendResult<Integer, String> sendResult = libraryEventProducer.sendLibraryEventSynchronousApproach(event);
-        log.info("sendResult is {}", sendResult.toString());
+        if(sendResult != null) {
+            log.info("sendResult is {}", sendResult.toString());
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
 
