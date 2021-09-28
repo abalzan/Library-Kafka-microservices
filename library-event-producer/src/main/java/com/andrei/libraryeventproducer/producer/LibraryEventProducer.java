@@ -93,7 +93,7 @@ public class LibraryEventProducer {
     public SendResult<Integer, String> sendLibraryEventSynchronousApproach(LibraryEvent libraryEvent) throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
         Integer key = libraryEvent.getLibraryEventId();
         String value = objectMapper.writeValueAsString(libraryEvent);
-        SendResult<Integer, String> sendResult = null;
+        SendResult<Integer, String> sendResult;
 
 
         try {
