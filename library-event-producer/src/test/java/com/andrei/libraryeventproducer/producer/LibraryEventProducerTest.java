@@ -33,7 +33,7 @@ class LibraryEventProducerTest {
     }
 
     @Test
-    void sendLibraryEvent() {
+    void sendLibraryEvent_Failure() {
         SettableListenableFuture future = new SettableListenableFuture();
         future.setException(new RuntimeException("Exception Calling Kafka"));
 
@@ -43,7 +43,7 @@ class LibraryEventProducerTest {
     }
 
     @Test
-    void sendLibraryEventWithTopic() {
+    void sendLibraryEventWithTopic_Failure() {
         SettableListenableFuture future = new SettableListenableFuture();
         future.setException(new RuntimeException("Exception Calling Kafka"));
 
@@ -65,7 +65,7 @@ class LibraryEventProducerTest {
     }
 
     @Test
-    void sendLibraryEventSynchronousApproach() {
+    void sendLibraryEventSynchronousApproach_Failure() {
         SettableListenableFuture future = new SettableListenableFuture();
         future.setException(new RuntimeException("Exception Calling Kafka"));
 
