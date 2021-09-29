@@ -79,6 +79,35 @@ class LibraryEventsControllerTest {
 
     }
 
+
+    @Test
+    void putLibraryEventWithTopicAndHeader() throws Exception {
+
+        final String json = mapper.writeValueAsString(createLibraryEventUpdate());
+
+        when(libraryEventProducer.sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class))).thenReturn(null);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/library-event-with-topic-and-header")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void putLibraryEventWithTopicAndHeader_BADREQUEST() throws Exception {
+
+        final String json = mapper.writeValueAsString(createLibraryEvent());
+
+        when(libraryEventProducer.sendLibraryEventWithTopicAndHeader(ArgumentMatchers.isA(LibraryEvent.class))).thenReturn(null);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/library-event-with-topic-and-header")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Please pass the libraryEventId"))
+        ;
+    }
+
     @Test
     void postLibraryEventWithTopicAndHeader() throws Exception {
 
@@ -152,6 +181,19 @@ class LibraryEventsControllerTest {
 
         return LibraryEvent.builder()
                 .libraryEventId(null)
+                .book(book)
+                .build();
+    }
+
+    private LibraryEvent createLibraryEventUpdate() {
+        Book book = Book.builder()
+                .bookId(123)
+                .bookAuthor("Andrei")
+                .bookName("Kafka using Spring Boot")
+                .build();
+
+        return LibraryEvent.builder()
+                .libraryEventId(123)
                 .book(book)
                 .build();
     }

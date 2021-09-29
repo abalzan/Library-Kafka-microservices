@@ -67,7 +67,7 @@ class LibraryEventsControllerITTest {
         final ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange("/v1/library-event", HttpMethod.POST, request, LibraryEvent.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        checkReceivedConsumerMessage();
+        checkReceivedConsumerNEWMessage();
     }
 
     @Test
@@ -83,7 +83,7 @@ class LibraryEventsControllerITTest {
         final ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange("/v1/library-event-synchronous", HttpMethod.POST, request, LibraryEvent.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        checkReceivedConsumerMessage();
+        checkReceivedConsumerNEWMessage();
     }
 
     @Test
@@ -99,7 +99,7 @@ class LibraryEventsControllerITTest {
         final ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange("/v1/library-event-with-topic", HttpMethod.POST, request, LibraryEvent.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        checkReceivedConsumerMessage();
+        checkReceivedConsumerNEWMessage();
     }
 
     @Test
@@ -117,11 +117,39 @@ class LibraryEventsControllerITTest {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 
-        checkReceivedConsumerMessage();
+        checkReceivedConsumerNEWMessage();
 
     }
 
-    private void checkReceivedConsumerMessage() {
+
+    @Test
+    @Timeout(5)
+    void putLibraryEventWithTopicAndHeader() {
+
+        LibraryEvent libraryEvent = createLibraryEvent();
+        libraryEvent.setLibraryEventId(123);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("content-type", MediaType.APPLICATION_JSON.toString());
+
+        HttpEntity<LibraryEvent> request = new HttpEntity<>(libraryEvent, headers);
+
+        final ResponseEntity<LibraryEvent> responseEntity = restTemplate.exchange("/v1/library-event-with-topic-and-header", HttpMethod.PUT, request, LibraryEvent.class);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        checkReceivedConsumerUPDATEMessage();
+
+    }
+
+    private void checkReceivedConsumerUPDATEMessage() {
+        final ConsumerRecord<Integer, String> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, "library-events");
+        String expected = "{\"libraryEventId\":123,\"libraryEventType\":\"UPDATE\",\"book\":{\"bookId\":123,\"bookName\":\"Kafka using Spring Boot\",\"bookAuthor\":\"Andrei\"}}";
+        final String value = singleRecord.value();
+        assertEquals(expected, value);
+    }
+
+    private void checkReceivedConsumerNEWMessage() {
         final ConsumerRecord<Integer, String> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, "library-events");
         String expected = "{\"libraryEventId\":null,\"libraryEventType\":\"NEW\",\"book\":{\"bookId\":123,\"bookName\":\"Kafka using Spring Boot\",\"bookAuthor\":\"Andrei\"}}";
         final String value = singleRecord.value();
