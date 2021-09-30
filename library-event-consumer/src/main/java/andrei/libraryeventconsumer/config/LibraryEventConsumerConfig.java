@@ -27,6 +27,7 @@ public class LibraryEventConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         configurer.configure(factory, kafkaConsumerFactory
                 .getIfAvailable(() -> new DefaultKafkaConsumerFactory<>(kafkaProperties.buildConsumerProperties())));
+        factory.setConcurrency(3); //not recommended for cloud environment
         //set the acknoledge mode to MANUAL and uncomment the LibraryEventsConsumerManualOffset bean and comment the LibraryEventConsumer
 //        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
 
