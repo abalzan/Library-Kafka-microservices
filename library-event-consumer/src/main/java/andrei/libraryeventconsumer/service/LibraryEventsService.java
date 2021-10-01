@@ -1,6 +1,7 @@
 package andrei.libraryeventconsumer.service;
 
 import andrei.libraryeventconsumer.entity.LibraryEvent;
+import andrei.libraryeventconsumer.entity.LibraryEventType;
 import andrei.libraryeventconsumer.repository.LibraryEventsRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,8 +29,15 @@ public class LibraryEventsService {
 
     private void save(LibraryEvent libraryEvent) {
         libraryEvent.getBook().setLibraryEvent(libraryEvent);
+        if(libraryEvent.getLibraryEventType().equals(LibraryEventType.UPDATE)) {
+            validate(libraryEvent);
+        }
         repository.save(libraryEvent);
         log.info("Successfully Persisted the library event {} ", libraryEvent);
+    }
+
+    private void validate(LibraryEvent libraryEvent) {
+        repository.findById(libraryEvent.getLibraryEventId()).ifPresentOrElse(this::save, () -> { throw new IllegalArgumentException("Not a valid Library Event");});
     }
 }
 
