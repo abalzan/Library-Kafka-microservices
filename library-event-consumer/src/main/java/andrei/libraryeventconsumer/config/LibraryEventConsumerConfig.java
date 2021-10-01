@@ -2,6 +2,7 @@ package andrei.libraryeventconsumer.config;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -16,6 +17,7 @@ import org.springframework.kafka.listener.ContainerProperties;
 @Configuration
 @EnableKafka
 @RequiredArgsConstructor
+@Slf4j
 public class LibraryEventConsumerConfig {
 
     private final KafkaProperties kafkaProperties;
@@ -28,6 +30,10 @@ public class LibraryEventConsumerConfig {
         configurer.configure(factory, kafkaConsumerFactory
                 .getIfAvailable(() -> new DefaultKafkaConsumerFactory<>(kafkaProperties.buildConsumerProperties())));
         factory.setConcurrency(3); //not recommended for cloud environment
+        factory.setErrorHandler((thrownException, consumerRecord) -> {
+            log.info("Exception in consumerConfig is {} and the record is {}", thrownException.getMessage(), consumerRecord);
+        });
+
         //set the acknoledge mode to MANUAL and uncomment the LibraryEventsConsumerManualOffset bean and comment the LibraryEventConsumer
 //        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
 
