@@ -1,8 +1,10 @@
 package andrei.libraryeventconsumer.config;
 
 
+import andrei.libraryeventconsumer.service.LibraryEventsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -18,6 +20,7 @@ import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +31,7 @@ import java.util.Map;
 public class LibraryEventConsumerConfig {
 
     private final KafkaProperties kafkaProperties;
+    private final LibraryEventsService libraryEventsService;
 
     @Bean
     ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
@@ -41,6 +45,26 @@ public class LibraryEventConsumerConfig {
             log.info("Exception in consumerConfig is {} and the record is {}", thrownException.getMessage(), consumerRecord);
         });
         factory.setRetryTemplate(retryTemplate());
+        factory.setRecoveryCallback(retryContext -> {
+            if(retryContext.getLastThrowable().getCause() instanceof RecoverableDataAccessException rdae) {
+                //Invoke the recovery logic
+                log.info("Inside the recoverable logic");
+
+         /*       Arrays.asList(retryContext.attributeNames())
+                        .forEach(attribute -> {
+                            log.info("Attribute name is : {} ", attribute);
+                            log.info("Attribute Value is : {} ", retryContext.getAttribute(attribute));
+                        });*/
+                ConsumerRecord<Integer, String> consumerRecord = (ConsumerRecord<Integer, String>) retryContext.getAttribute("record");
+                libraryEventsService.handleRecovery(consumerRecord);
+
+            } else {
+                log.info("Inside the non recoverable logic");
+                throw new RuntimeException(retryContext.getLastThrowable().getMessage());
+            }
+
+            return null;
+        });
 
         //set the acknoledge mode to MANUAL and uncomment the LibraryEventsConsumerManualOffset bean and comment the LibraryEventConsumer
 //        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);

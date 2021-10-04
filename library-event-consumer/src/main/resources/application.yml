@@ -10,6 +10,8 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: library-events-listener-group
+    producer:
+      bootstrap-servers: localhost:9095,localhost:9093,localhost:9094
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
