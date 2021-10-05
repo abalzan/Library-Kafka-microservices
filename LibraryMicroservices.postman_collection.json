@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "0dd4beb1-5335-4304-b42e-28d0bb3e450d",
+		"name": "LibraryMicroservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/v1/library-event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"libraryEventId\": null,\n\t\"book\": {\n\t\t\"bookId\":123,\n\t\t\"bookName\": \"My kafka book\",\n\t\t\"bookAuthor\": \"Andrei\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/library-event",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"library-event"
+					]
+				},
+				"description": "create new book"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/v1/library-event-synchronous",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"libraryEventId\": null,\n\t\"book\": {\n\t\t\"bookId\":123,\n\t\t\"bookName\": \"My kafka book\",\n\t\t\"bookAuthor\": \"Andrei\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/library-event-synchronous",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"library-event-synchronous"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/v1/library-event-with-topic",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"libraryEventId\": null,\n\t\"book\": {\n\t\t\"bookId\":123,\n\t\t\"bookName\": \"My kafka book\",\n\t\t\"bookAuthor\": \"Andrei\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/library-event-with-topic",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"library-event-with-topic"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/v1/library-event-with-topic-and-header",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"libraryEventId\": null,\n\t\"book\": {\n\t\t\"bookId\":123,\n\t\t\"bookName\": \"My kafka book\",\n\t\t\"bookAuthor\": \"Andrei\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/library-event-with-topic-and-header",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"library-event-with-topic-and-header"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/v1/library-event-with-topic-and-header",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"libraryEventId\": 123,\n\t\"book\": {\n\t\t\"bookId\":123,\n\t\t\"bookName\": \"My kafka book\",\n\t\t\"bookAuthor\": \"Andrei\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/library-event-with-topic-and-header",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"library-event-with-topic-and-header"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
