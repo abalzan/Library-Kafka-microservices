@@ -11,5 +11,6 @@
 
     <modules>
         <module>library-event-producer</module>
+        <module>library-event-consumer</module>
     </modules>
 </project>
